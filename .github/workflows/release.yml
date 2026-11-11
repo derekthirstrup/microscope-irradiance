@@ -18,7 +18,7 @@ jobs:
             name: windows
           - os: macos-latest
             name: macos-arm64
-          - os: macos-13
+          - os: macos-15-intel
             name: macos-x86_64
           - os: ubuntu-22.04
             name: linux-x86_64
@@ -35,7 +35,7 @@ jobs:
         shell: bash
         run: echo "version=$(python -c 'import irradiance_calc as m; print(m.__version__)')" >> "$GITHUB_OUTPUT"
       - name: Tag matches package version
-        if: startsWith(github.ref, 'refs/tags/')
+        if: ${{ !cancelled() && startsWith(github.ref, 'refs/tags/') }}
         shell: bash
         run: test "${GITHUB_REF_NAME#v}" = "${{ steps.v.outputs.version }}"
       - name: Test
@@ -71,7 +71,7 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
+    if: ${{ !cancelled() && startsWith(github.ref, 'refs/tags/') }}
     steps:
       - uses: actions/download-artifact@v4
         with:

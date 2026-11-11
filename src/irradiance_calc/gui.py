@@ -416,7 +416,7 @@ class App(ttk.Frame):
 
         font = tkfont.nametofont("TkDefaultFont")
         pad = font.measure("  ")
-        for i, (c, h) in enumerate(zip(cols, heads)):
+        for i, (c, h) in enumerate(zip(cols, heads, strict=True)):
             self.tree.heading(c, text=h)
             texts = [h] + [r[i] for r in rows]
             if h == "Note":
@@ -430,7 +430,7 @@ class App(ttk.Frame):
                 anchor="w" if h == "Note" else "center",
                 stretch=h == "Note",
             )
-        for r, vals in zip(res.rows, rows):
+        for r, vals in zip(res.rows, rows, strict=True):
             self.tree.insert("", "end", values=vals, tags=(r.row_type,))
 
     def table_values(self) -> list[list[str]]:

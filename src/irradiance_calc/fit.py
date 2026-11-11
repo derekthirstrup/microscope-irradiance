@@ -90,7 +90,7 @@ def _r2(ys: list[float], yhat: list[float]) -> float:
     n = len(ys)
     ybar = sum(ys) / n
     sst = sum((y - ybar) ** 2 for y in ys)
-    sse = sum((y - f) ** 2 for y, f in zip(ys, yhat))
+    sse = sum((y - f) ** 2 for y, f in zip(ys, yhat, strict=True))
     return 1 - sse / sst if sst > 0 else float("nan")
 
 
@@ -101,9 +101,9 @@ def ols_origin(xs: list[float], ys: list[float]) -> dict:
     sxx = sum(x * x for x in xs)
     if sxx == 0:
         raise ValueError("All settings in the fit window are 0 %.")
-    m = sum(x * y for x, y in zip(xs, ys)) / sxx
+    m = sum(x * y for x, y in zip(xs, ys, strict=True)) / sxx
     yhat = [m * x for x in xs]
-    sse = sum((y - f) ** 2 for y, f in zip(ys, yhat))
+    sse = sum((y - f) ** 2 for y, f in zip(ys, yhat, strict=True))
     s2 = sse / (n - 1)
     return {
         "model": "origin",
@@ -126,10 +126,10 @@ def ols_free(xs: list[float], ys: list[float]) -> dict:
     sxx_c = sum((x - xbar) ** 2 for x in xs)
     if sxx_c == 0:
         raise ValueError("All settings in the fit window are identical.")
-    m = sum((x - xbar) * (y - ybar) for x, y in zip(xs, ys)) / sxx_c
+    m = sum((x - xbar) * (y - ybar) for x, y in zip(xs, ys, strict=True)) / sxx_c
     b = ybar - m * xbar
     yhat = [m * x + b for x in xs]
-    sse = sum((y - f) ** 2 for y, f in zip(ys, yhat))
+    sse = sum((y - f) ** 2 for y, f in zip(ys, yhat, strict=True))
     s2 = sse / (n - 2)
     return {
         "model": "free",

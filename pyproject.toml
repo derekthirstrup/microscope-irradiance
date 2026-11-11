@@ -7,7 +7,7 @@ name = "irradiance-calc"
 dynamic = ["version"]
 description = "Convert a microscope laser setting (%) into irradiance, photon flux and dose at the sample plane."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [{ name = "Derek Thirstrup" }]
 keywords = ["microscopy", "irradiance", "photon flux", "phototoxicity", "QUAREP-LiMi", "power meter"]
@@ -42,7 +42,7 @@ where = ["src"]
 
 [tool.ruff]
 line-length = 110
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B"]

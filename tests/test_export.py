@@ -73,7 +73,7 @@ def test_round_trip(argo_path, tmp_path):
     assert cal2.metadata["power_measured_through_objective"] == "10x"
     assert cal2.metadata["operator"] == "DT"
     assert len(cal2.readings) == len(cal.readings)
-    for a, b in zip(cal.readings, cal2.readings):
+    for a, b in zip(cal.readings, cal2.readings, strict=True):
         assert (a.setting_pct, a.nm) == (b.setting_pct, b.nm)
         assert b.power_mw == pytest.approx(a.power_mw, rel=1e-9, abs=1e-12)
         assert b.error_mw == pytest.approx(a.error_mw, rel=1e-9, abs=1e-12)
@@ -92,9 +92,9 @@ def test_csv_values_equal_displayed_values(argo_path):
     lines = to_csv(res).split("## results\n")[1].split("\n\n")[0].splitlines()
     header = lines[0].split(",")
     rows = {(r.split(",")[1], r.split(",")[0]): r.split(",") for r in lines[1:]}
-    for r, disp in zip(res.rows, shown):
+    for r, disp in zip(res.rows, shown, strict=True):
         csv_row = rows[(r.row_type, r.setting.text)]
-        val = dict(zip(header, csv_row))
+        val = dict(zip(header, csv_row, strict=False))  # quoted notes may contain commas
         # same number, to the precision the table shows (the CSV carries 7 significant figures)
         assert float(val[f"{r.nm}_E_mWcm2"]) == pytest.approx(
             float(disp[heads.index("E (mW/cm²)")]), abs=0.05
@@ -112,7 +112,7 @@ def test_k_factor_scales_everything(argo_path):
     cal = parse_file(argo_path)
     a = compute(cal, _inputs(k=1.0))
     b = compute(cal, _inputs(k=0.9))
-    for ra, rb in zip(a.rows, b.rows):
+    for ra, rb in zip(a.rows, b.rows, strict=True):
         assert rb.p_mw == pytest.approx(0.9 * ra.p_mw)
         assert rb.e_mw_cm2 == pytest.approx(0.9 * ra.e_mw_cm2)
         assert rb.h_j_cm2["total"] == pytest.approx(0.9 * ra.h_j_cm2["total"])
