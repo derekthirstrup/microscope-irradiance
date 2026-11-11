@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Irradiance Calculator: laser setting to irradiance, photon flux and dose at the sample plane"
+version: 1.0.0
+license: BSD-3-Clause
+repository-code: "https://github.com/derekthirstrup/microscope-irradiance"
+abstract: >-
+  Converts microscope laser power settings (%) into irradiance (mW/cm2), photon flux
+  (photons cm-2 s-1) and dose (J/cm2 and photons/cm2) at the sample plane, from an
+  Argolight ArgoPower export or hand-entered power-meter readings. Written for the
+  QUAREP-LiMi irradiance measurement guidelines.
+keywords:
+  - microscopy
+  - irradiance
+  - photon flux
+  - phototoxicity
+  - QUAREP-LiMi
+authors:
+  - family-names: Thirstrup
+    given-names: Derek

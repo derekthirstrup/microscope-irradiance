@@ -1,0 +1,23 @@
+# Manual power measurement template (for example a Thorlabs PM100D/PM400 with a slide sensor)
+# Fill in one row per laser setting. Leave a cell blank if you did not measure that line.
+# Powers are in mW, measured at the sample plane through the imaging objective.
+# Set the meter's wavelength to each laser line before reading it, and zero the sensor with the laser off.
+# Rename, add or delete the wavelength columns to match your lasers (format <nm>_mW, or <nm>_uW).
+# You may repeat a setting on extra rows for replicate readings.
+# instrument:
+# objective:
+# power_meter:
+# date:
+# operator:
+setting_pct,405_mW,488_mW,561_mW,640_mW
+0,,,,
+10,,,,
+20,,,,
+30,,,,
+40,,,,
+50,,,,
+60,,,,
+70,,,,
+80,,,,
+90,,,,
+100,,,,

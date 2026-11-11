@@ -1,0 +1,23 @@
+# Manual power measurement template (for example a Thorlabs PM100D/PM400 with a slide sensor)
+# Fill in one row per laser setting. Leave a cell blank if you did not measure that line.
+# Powers are in mW, measured at the sample plane through the imaging objective.
+# Set the meter's wavelength to each laser line before reading it, and zero the sensor with the laser off.
+# Rename, add or delete the wavelength columns to match your lasers (format: <nm>_mW).
+# You may repeat a setting on extra rows for replicate readings.
+# instrument: Nikon1 spinning-disk confocal
+# objective: 10x
+# power_meter: Argolight SLPM-115 (values transcribed from the ArgoPower export)
+# date: 2025-09-23
+# operator:
+setting_pct,405_mW,488_mW,561_mW,640_mW
+0,0.000,0.000,-0.001,0.000
+10,0.160,0.850,0.487,0.957
+20,0.430,1.747,1.051,1.864
+30,0.731,2.667,1.616,2.762
+40,1.091,3.587,2.196,3.648
+50,1.510,4.544,2.746,4.474
+60,2.009,5.545,3.308,5.324
+70,2.474,6.508,3.875,6.145
+80,3.052,7.404,4.423,6.898
+90,3.709,8.274,4.999,7.471
+100,4.261,8.621,5.473,7.960

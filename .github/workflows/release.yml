@@ -1,0 +1,85 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            name: windows
+          - os: macos-latest
+            name: macos-arm64
+          - os: macos-13
+            name: macos-x86_64
+          - os: ubuntu-22.04
+            name: linux-x86_64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[dev]" pyinstaller
+      - name: Version
+        id: v
+        shell: bash
+        run: echo "version=$(python -c 'import irradiance_calc as m; print(m.__version__)')" >> "$GITHUB_OUTPUT"
+      - name: Tag matches package version
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: test "${GITHUB_REF_NAME#v}" = "${{ steps.v.outputs.version }}"
+      - name: Test
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "Linux" ]; then sudo apt-get install -y -qq xvfb > /dev/null; xvfb-run -a python -m pytest -q;
+          else python -m pytest -q; fi
+      - name: PyInstaller
+        run: pyinstaller packaging/irradiance_calc.spec --noconfirm
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DMyAppVersion=${{ steps.v.outputs.version }} packaging\installer.iss
+          Compress-Archive -Path dist\IrradianceCalculator -DestinationPath dist\IrradianceCalculator-${{ steps.v.outputs.version }}-windows-portable.zip
+      - name: Package (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          cd dist
+          ditto -c -k --keepParent IrradianceCalculator.app IrradianceCalculator-${{ steps.v.outputs.version }}-${{ matrix.name }}.zip
+      - name: Package (Linux)
+        if: runner.os == 'Linux'
+        run: tar -C dist -czf dist/IrradianceCalculator-${{ steps.v.outputs.version }}-${{ matrix.name }}.tar.gz IrradianceCalculator
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: |
+            dist/*.exe
+            dist/*.zip
+            dist/*.tar.gz
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: assets
+          merge-multiple: true
+      - name: Checksums
+        run: cd assets && sha256sum * > SHA256SUMS.txt && cat SHA256SUMS.txt
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: assets/*
+          generate_release_notes: true

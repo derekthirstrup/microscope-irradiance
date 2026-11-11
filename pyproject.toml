@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "irradiance-calc"
+dynamic = ["version"]
+description = "Convert a microscope laser setting (%) into irradiance, photon flux and dose at the sample plane."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [{ name = "Derek Thirstrup" }]
+keywords = ["microscopy", "irradiance", "photon flux", "phototoxicity", "QUAREP-LiMi", "power meter"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Intended Audience :: Science/Research",
+]
+dependencies = []
+
+[project.optional-dependencies]
+gui = ["matplotlib>=3.5"]
+report = ["matplotlib>=3.5"]
+dev = ["matplotlib>=3.5", "pytest>=7", "ruff>=0.4", "pypdf>=4"]
+
+[project.scripts]
+irradiance-calc = "irradiance_calc.cli:main"
+
+[project.gui-scripts]
+irradiance-calc-gui = "irradiance_calc.gui:main"
+
+[project.urls]
+Homepage = "https://github.com/derekthirstrup/microscope-irradiance"
+
+[tool.setuptools.dynamic]
+version = { attr = "irradiance_calc.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
